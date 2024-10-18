@@ -4,7 +4,6 @@ from django.conf import settings
 from news.forms import CommentForm
 
 
-@pytest.mark.django_db
 class TestNews:
 
     def test_comments_order(self, client, detail_url):
@@ -24,7 +23,6 @@ class TestNews:
         assert 'form' in response.context
         assert isinstance(response.context['form'], CommentForm)
 
-
     def test_news_order_on_homepage(self, client, news_list, home_url):
         response = client.get(home_url)
         news_list = response.context['news_list']
@@ -38,3 +36,8 @@ class TestNews:
             'news_list'
         ].count() == settings.NEWS_COUNT_ON_HOME_PAGE
 
+    def test_non_author_can_view_form(self, client_with_reader_login,
+                                      detail_url):
+        response = client_with_reader_login.get(detail_url)
+        assert 'form' in response.context
+        assert isinstance(response.context['form'], CommentForm)

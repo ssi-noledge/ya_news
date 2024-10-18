@@ -6,6 +6,7 @@ from django.contrib.auth import get_user_model
 from django.test import Client
 from django.urls import reverse
 
+from news.forms import BAD_WORDS
 from news.models import Comment, News
 
 User = get_user_model()
@@ -105,3 +106,13 @@ def comments(news, author):
         )
         comment.created = datetime.today() - timedelta(days=i)
         comment.save()
+
+
+@pytest.fixture
+def bad_words_data():
+    return {'text': f'I like words {BAD_WORDS[0]}!'}
+
+
+@pytest.fixture(autouse=True)
+def enable_db_access_for_all_tests(db):
+    pass

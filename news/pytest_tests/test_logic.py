@@ -3,10 +3,8 @@ from http import HTTPStatus
 import pytest
 from django.contrib.auth import get_user
 
-from news.forms import BAD_WORDS, WARNING
+from news.forms import WARNING
 from news.models import Comment
-
-pytestmark = pytest.mark.django_db
 
 COMMENT_TEXT = 'New comment'
 UPDATED_COMMENT_TEXT = 'Updated comment'
@@ -76,8 +74,8 @@ def test_authorized_user_can_post_comment(
     assert comment.author == author
 
 
-def test_user_cant_use_bad_words(client_with_login, detail_url):
-    bad_words_data = {'text': f'I like words {BAD_WORDS[0]}!'}
+def test_user_cant_use_bad_words(client_with_login, detail_url,
+                                 bad_words_data):
     initial_comment_count = Comment.objects.count()
     response = client_with_login.post(detail_url, data=bad_words_data)
     assert 'form' in response.context
